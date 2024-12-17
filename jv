@@ -1,0 +1,62 @@
+// Mainīgie
+let history = JSON.parse(localStorage.getItem('history')) || [];
+
+// Funkcija, lai pievienotu tekstu ievadei
+function appendInput(value) {
+    document.getElementById('display').value += value;
+}
+
+// Funkcija, lai notīrītu ekrānu
+function clearDisplay() {
+    document.getElementById('display').value = '';
+}
+
+// Funkcija, lai izpildītu aprēķinu
+function calculate() {
+    try {
+        const display = document.getElementById('display');
+        const result = eval(display.value);
+        if (result !== undefined) {
+            history.push(${display.value} = ${result});
+            updateHistory();
+            saveHistory();
+            display.value = result;
+        }
+    } catch (error) {
+        alert('Kļūda izteiksmē!');
+        clearDisplay();
+    }
+}
+
+// Funkcija, lai atjauninātu vēstures sarakstu
+function updateHistory() {
+    const historyList = document.getElementById('history');
+    historyList.innerHTML = '';
+    history.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = ${item} <button onclick="deleteHistoryItem(${index})">Dzēst</button>;
+        historyList.appendChild(li);
+    });
+}
+
+// Funkcija, lai dzēstu konkrētu vēstures ierakstu
+function deleteHistoryItem(index) {
+    history.splice(index, 1);
+    updateHistory();
+    saveHistory();
+}
+
+// Funkcija, lai dzēstu visu vēsturi
+function clearHistory() {
+    history = [];
+    updateHistory();
+    saveHistory();
+}
+
+// Funkcija, lai saglabātu vēsturi localStorage
+function saveHistory() {
+    localStorage.setItem('history', JSON.stringify(history));
+}
+
+// Ielādē vēsturi, kad lapa tiek ielādēta
+window.onload = updateHistory;
